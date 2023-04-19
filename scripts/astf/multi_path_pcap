@@ -1,0 +1,45 @@
+from trex.astf.api import *
+import argparse
+
+
+
+class Prof1():
+    def __init__(self):
+        pass  # tunables
+
+    def create_profile(self):
+        # ip generator
+        ip_gen_c = ASTFIPGenDist(ip_range=["192.168.110.1", "192.168.110.255"], distribution="seq")
+        ip_gen_s = ASTFIPGenDist(ip_range=["15.15.0.0", "15.15.255.255"], distribution="seq")
+        ip_gen = ASTFIPGen(glob=ASTFIPGenGlobal(ip_offset="1.0.0.0"),
+                           dist_client=ip_gen_c,
+                           dist_server=ip_gen_s)
+   #         ASTFCapInfo(file="/Test/yahoo.pcap", cps=1),
+
+        profile = ASTFProfile(default_ip_gen=ip_gen, cap_list=[
+
+            ASTFCapInfo(file="/root/tt.com/chrome/TLS.handshake.type==1/example.com_02.pcap", cps=1),
+            ASTFCapInfo(file="/root/tt.com/chrome/TLS.handshake.type==1/example.com_02.pcap", cps=1,port=631),
+            ASTFCapInfo(file="/root/tt.com/chrome/TLS.handshake.type==1/example.com_01.pcap", cps=1,port=664),
+            ASTFCapInfo(file="/Protocols_and_pcap/tt/editor-tiles-row-1.example.com_Trex.pcap", cps=1,port=832),
+            ASTFCapInfo(file="/Protocols_and_pcap/tt/ctiles-row.example.com_Trex.pccap", cps=1,port=1129),
+            ASTFCapInfo(file="/Protocols_and_pcap/tt/rtproxy-row.example.pcap", cps=1,port=1184),
+            ASTFCapInfo(file="/Protocols_and_pcap/tt/ads-resources-legacy.example.com_Trex.pcap", cps=1,port=2381),
+
+
+
+
+        ])
+
+        return profile
+
+    def get_profile(self, tunables, **kwargs):
+        parser = argparse.ArgumentParser(description='Argparser for {}'.format(os.path.basename(__file__)),
+                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        args = parser.parse_args(tunables)
+        return self.create_profile()
+
+
+def register():
+    return Prof1()
